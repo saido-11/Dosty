@@ -44,6 +44,7 @@ jobs:
       - run: npm run test:e2e
       - run: npm run dist:win -- --publish never
       - run: npm run verify:package -- dist/win-unpacked
+      - run: npm run test:packaged:win -- dist/win-unpacked
       - uses: actions/upload-artifact@v4
         with:
           name: windows-x64

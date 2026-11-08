@@ -1,9 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
 const zlib = require('node:zlib');
 const { app } = require('electron');
@@ -68,9 +66,8 @@ function makeCircleCharacterPng(rgba) {
 const phaseArg = process.argv.find((a) => a.startsWith('--phase=')) || '--phase=1';
 const phase = phaseArg.split('=')[1];
 const userDataArg = process.argv.find((a) => a.startsWith('--user-data='));
-const tmpRoot = userDataArg
-  ? userDataArg.slice('--user-data='.length)
-  : fs.mkdtempSync(path.join(os.tmpdir(), 'mk-e2e-'));
+assert.ok(userDataArg, 'Run npm run test:e2e so each Electron phase exits before restart');
+const tmpRoot = userDataArg.slice('--user-data='.length);
 
 process.env.DOSTY_TEST = '1';
 process.env.DOSTY_USER_DATA = tmpRoot;
@@ -487,17 +484,9 @@ async function runPhase1() {
 
   ctx.inputMonitor.stop();
 
-  const childEnv = { ...process.env };
-  delete childEnv.ELECTRON_RUN_AS_NODE;
-  const phase2 = spawnSync(
-    process.execPath,
-    [__filename, '--phase=2', `--user-data=${tmpRoot}`],
-    { stdio: 'inherit', env: childEnv }
-  );
-  assert.equal(phase2.status, 0, 'Faz 2 yeniden açılış doğrulaması başarılı olmalı');
-
-  fs.rmSync(tmpRoot, { recursive: true, force: true });
-  console.log('[E2E] TÜM UÇTAN UCA TESTLER BAŞARIYLA GEÇTİ!');
+  // The Node driver starts phase 2 only after this entire Electron process exits.
+  // Sharing a live Chromium profile between two processes locks files on Windows.
+  console.log('[E2E] Faz 1 tamamlandı; yeniden açılış için Electron kapatılıyor.');
   app.exit(0);
 }
 
