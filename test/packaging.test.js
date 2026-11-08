@@ -1,0 +1,32 @@
+'use strict';
+const {test} = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const pkg = require('../package.json');
+const lock = require('../package-lock.json');
+
+test('Windows bridge build, resource and runtime paths agree; setup and portable names differ', () => {
+  const root = path.resolve(__dirname, '..');
+  const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+  assert.ok(pkg.scripts['dist:win'].startsWith('node scripts/build-native.mjs &&'));
+  assert.ok(pkg.build.extraResources.some(r => r.from === 'resources/bin' && r.to === 'bin'));
+  assert.ok(read('scripts/build-native.mjs').includes('input-bridge-win-x64.exe'));
+  assert.ok(read('src/main/input-monitor.js').includes('input-bridge-win-x64.exe'));
+  assert.notEqual(pkg.build.nsis.artifactName, pkg.build.portable.artifactName);
+  assert.ok(pkg.build.nsis.artifactName.endsWith('-setup.${ext}'));
+  assert.ok(pkg.build.portable.artifactName.endsWith('-portable.${ext}'));
+  assert.deepEqual(pkg.devDependencies, lock.packages[''].devDependencies);
+  assert.equal(pkg.license, 'GPL-3.0-only');
+  assert.equal(pkg.name, 'dosty');
+  assert.equal(pkg.productName, 'Dosty');
+  assert.equal(pkg.build.productName, 'Dosty');
+  assert.equal(lock.packages[''].license, pkg.license);
+  assert.equal(lock.packages[''].name, pkg.name);
+  assert.equal(lock.packages[''].version, pkg.version);
+  assert.ok(!JSON.stringify(pkg.build).includes('/Users/'));
+  const flow = read('.github/workflows/release.yml');
+  assert.ok(flow.includes('verify:package'));
+  assert.ok(!flow.includes('action-gh-release'));
+  assert.ok(!flow.includes('contents: write'));
+});

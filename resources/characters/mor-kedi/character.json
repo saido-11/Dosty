@@ -1,0 +1,34 @@
+{
+  "builtIn" : true,
+  "id" : "mor-kedi",
+  "name" : "Mor Kedi",
+  "offsets" : {
+    "blink" : {
+      "x" : 0,
+      "y" : 0
+    },
+    "both" : {
+      "x" : 0,
+      "y" : 0
+    },
+    "idle" : {
+      "x" : 0,
+      "y" : 0
+    },
+    "keyboard" : {
+      "x" : 0,
+      "y" : 0
+    },
+    "mouse" : {
+      "x" : 0,
+      "y" : 0
+    }
+  },
+  "poses" : {
+    "blink" : "blink.png",
+    "both" : "both.png",
+    "idle" : "idle.png",
+    "keyboard" : "keyboard.png",
+    "mouse" : "mouse.png"
+  }
+}

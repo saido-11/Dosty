@@ -1,0 +1,54 @@
+name: Build and validate packages
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  macos:
+    runs-on: macos-latest
+    env:
+      MACOS_ARCH: arm64
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:e2e
+      - run: npm run dist:mac -- --publish never
+      - run: npm run verify:package -- "dist/mac-arm64/Dosty.app"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-arm64
+          if-no-files-found: error
+          path: |
+            dist/*.dmg
+            dist/*.zip
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:e2e
+      - run: npm run dist:win -- --publish never
+      - run: npm run verify:package -- dist/win-unpacked
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          if-no-files-found: error
+          path: |
+            dist/*-setup.exe
+            dist/*-portable.exe
+# This workflow uploads build artifacts only. It does not publish GitHub Releases.

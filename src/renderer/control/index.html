@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' file: data: blob:; style-src 'self'; script-src 'self';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="desktopCharacter">Dosty</title>
+    <link rel="icon" type="image/png" href="./app-icon.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-badge" aria-hidden="true">
+            <img src="./app-icon.png" alt="" class="brand-logo" />
+          </div>
+          <div>
+            <h1><span data-i18n="desktopCharacter">Dosty</span></h1>
+            <p class="subtitle"><span data-i18n="anOfflineKeyboardAndMouseCompanion">Çevrimdışı klavye ve fare eşlikçisi</span></p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button type="button" id="btn-open-add" class="btn btn-secondary">
+            <span data-i18n="addCharacter">+ Karakter ekle</span>
+          </button>
+          <button type="button" id="btn-toggle-overlay" class="btn btn-primary">
+            <span data-i18n="showOnDesktop">Masaüstünde göster</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- macOS Input Monitoring Permission Banner (shown only on macOS when permission is missing) -->
+      <section id="mac-permission-banner" class="permission-banner" hidden>
+        <div class="permission-copy">
+          <strong><span data-i18n="macosInputMonitoringPermissionRequired">macOS Giriş İzleme izni gerekiyor</span></strong>
+          <p>
+            <span data-i18n="toDetectKeyPressesWhileAnotherApp">Başka bir uygulama veya oyun odaktayken klavye vuruşlarını algılayabilmek için macOS</span>
+            <strong><span data-i18n="privacySecurityInputMonitoring">Gizlilik ve Güvenlik → Giriş İzleme</span></strong> <span data-i18n="permissionTheAppDoesNotReconstructStore">izni ister. Uygulama yazdığınız
+            metinleri oluşturmaz, kaydetmez veya göndermez; yalnızca tuşa basıldığı an el
+            animasyonunu oynatır.</span>
+          </p>
+        </div>
+        <div class="permission-actions">
+          <button type="button" id="btn-open-mac-settings" class="btn btn-warning">
+            <span data-i18n="openInputMonitoringSettings">Giriş İzleme Ayarını Aç</span>
+          </button>
+          <button type="button" id="btn-recheck-permission" class="btn btn-ghost">
+            <span data-i18n="checkAgain">Tekrar Kontrol Et</span>
+          </button>
+        </div>
+      </section>
+
+      <main class="main-grid">
+        <!-- Left Column: Live Stage & Desktop Controls -->
+        <section class="panel stage-panel" aria-labelledby="stage-heading">
+          <div class="panel-header">
+            <div>
+              <h2 id="stage-heading"><span data-i18n="livePreview">Canlı Önizleme</span></h2>
+              <p class="panel-hint"><span data-i18n="pressAKeyOrClickThePreview">Klavyede bir tuşa basın veya önizleme alanına tıklayın</span></p>
+            </div>
+            <span id="overlay-status-pill" class="status-pill status-off"><span data-i18n="hiddenFromDesktop">Masaüstünde gizli</span></span>
+          </div>
+
+          <div id="main-preview-box" class="preview-stage checkerboard" tabindex="0" aria-label="Karakter canlı önizleme alanı" data-i18n-aria-label="liveCharacterPreview">
+            <canvas id="main-preview-canvas"></canvas>
+            <div class="pose-indicator" id="main-pose-label"><span data-i18n="idle">Bekleme</span></div>
+          </div>
+
+          <div class="settings-card" role="region" aria-label="Ayarlar" data-i18n-aria-label="settings">
+            <div class="setting-row language-setting">
+              <label for="language-select" class="setting-label" data-i18n="language">Dil</label>
+              <select id="language-select" aria-label="Türkçe / English"><option value="tr">Türkçe</option><option value="en">English</option></select>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-label-row">
+                <span class="setting-label" id="position-label-text"><span data-i18n="desktopPosition">Masaüstü konumu</span></span>
+                <button type="button" id="btn-move-character" class="btn btn-ghost btn-xs">
+                  <span data-i18n="moveCharacter">Karakteri taşı</span>
+                </button>
+              </div>
+              <div class="corner-pills" role="radiogroup" aria-label="Masaüstü konumu" data-i18n-aria-label="desktopPosition">
+                <label class="pill-option">
+                  <input type="radio" name="corner" value="top-left" />
+                  <span><span data-i18n="topLeft">Sol Üst</span></span>
+                </label>
+                <label class="pill-option">
+                  <input type="radio" name="corner" value="top-right" />
+                  <span><span data-i18n="topRight">Sağ Üst</span></span>
+                </label>
+                <label class="pill-option">
+                  <input type="radio" name="corner" value="bottom-left" />
+                  <span><span data-i18n="bottomLeft">Sol Alt</span></span>
+                </label>
+                <label class="pill-option">
+                  <input type="radio" name="corner" value="bottom-right" checked />
+                  <span><span data-i18n="bottomRight">Sağ Alt</span></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-label-row">
+                <label for="size-slider" class="setting-label"><span data-i18n="characterSize">Karakter boyutu</span></label>
+                <span id="size-value" class="setting-value">240 px</span>
+              </div>
+              <input
+                type="range"
+                id="size-slider"
+                min="140"
+                max="420"
+                step="10"
+                value="240"
+              />
+            </div>
+
+            <label class="touch-toggle-row" for="chk-touch-reaction">
+              <div>
+                <span class="setting-label"><span data-i18n="touchReaction">Dokunma tepkisi</span></span>
+                <p class="muted"><span data-i18n="clickVisiblePixelsToBounceClicksPass">Görünür kısma tıklanınca hafifçe zıplar; tıklama alta geçer</span></p>
+              </div>
+              <input type="checkbox" id="chk-touch-reaction" checked />
+            </label>
+          </div>
+        </section>
+
+        <!-- Right Column: Character Library -->
+        <section class="panel library-panel" aria-labelledby="library-heading">
+          <div class="panel-header">
+            <div>
+              <h2 id="library-heading"><span data-i18n="characters">Karakterler</span></h2>
+              <p class="panel-hint"><span data-i18n="youCanAddABlinkPngTo">Mevcut karakterlere sonradan göz kırpma PNG’si de ekleyebilirsiniz</span></p>
+            </div>
+            <button type="button" id="btn-open-add-inline" class="btn btn-ghost btn-sm">
+              <span data-i18n="addNew">+ Yeni ekle</span>
+            </button>
+          </div>
+
+          <div id="character-list" class="character-list" role="list"></div>
+          <input type="file" id="hidden-existing-blink-input" accept="image/png,.png" hidden />
+        </section>
+      </main>
+    </div>
+
+    <!-- Add Character Modal (<dialog> per modern web standards) -->
+    <dialog id="add-character-dialog" aria-labelledby="add-dialog-title">
+      <div class="dialog-inner">
+        <header class="dialog-header">
+          <div>
+            <h2 id="add-dialog-title"><span data-i18n="addCharacter2">Karakter ekle</span></h2>
+            <p class="panel-hint">
+              <span data-i18n="uploadFourPngPosesAddAnOptional">Dört temel PNG görselini yükleyin; isteğe bağlı beşinci görselle göz kırpma ekleyin.</span>
+            </p>
+          </div>
+          <button type="button" id="btn-close-dialog" class="icon-close" aria-label="Kapat" data-i18n-aria-label="close">
+            ✕
+          </button>
+        </header>
+
+        <div class="dialog-body">
+          <!-- Primary: 4 Required Pose Upload Slots + 5th Optional Blink Slot -->
+          <div class="upload-column">
+            <div class="pose-slots-grid" id="pose-slots-grid">
+              <div class="pose-slot" data-pose="idle" tabindex="0" role="button" aria-label="Bekleme pozu PNG yükle veya değiştir" data-i18n-aria-label="uploadOrReplaceTheIdlePng">
+                <div class="slot-thumb checkerboard">
+                  <img data-thumb="idle" alt="Bekleme önizlemesi" data-i18n-alt="idlePreview" hidden />
+                  <span class="slot-placeholder" data-placeholder="idle"><span data-i18n="chooseOrDropAPng">PNG seç veya bırak</span></span>
+                </div>
+                <div class="slot-meta">
+                  <div class="slot-title-row">
+                    <strong><span data-i18n="1Idle">1. Bekleme</span></strong>
+                    <span class="slot-action-tag" data-tag="idle"><span data-i18n="upload">Yükle</span></span>
+                  </div>
+                  <p><span data-i18n="shownWhenNoKeysArePressed">Hiçbir tuşa basılmadığında gösterilir.</span></p>
+                </div>
+              </div>
+
+              <div class="pose-slot" data-pose="keyboard" tabindex="0" role="button" aria-label="Klavye pozu PNG yükle veya değiştir" data-i18n-aria-label="uploadOrReplaceTheKeyboardPng">
+                <div class="slot-thumb checkerboard">
+                  <img data-thumb="keyboard" alt="Klavye önizlemesi" data-i18n-alt="keyboardPreview" hidden />
+                  <span class="slot-placeholder" data-placeholder="keyboard"><span data-i18n="chooseOrDropAPng">PNG seç veya bırak</span></span>
+                </div>
+                <div class="slot-meta">
+                  <div class="slot-title-row">
+                    <strong><span data-i18n="2Keyboard">2. Klavye</span></strong>
+                    <span class="slot-action-tag" data-tag="keyboard"><span data-i18n="upload">Yükle</span></span>
+                  </div>
+                  <p><span data-i18n="shownWhenAKeyboardKeyIsPressed">Herhangi bir klavye tuşuna basılınca gösterilir.</span></p>
+                </div>
+              </div>
+
+              <div class="pose-slot" data-pose="mouse" tabindex="0" role="button" aria-label="Fare pozu PNG yükle veya değiştir" data-i18n-aria-label="uploadOrReplaceTheMousePng">
+                <div class="slot-thumb checkerboard">
+                  <img data-thumb="mouse" alt="Fare önizlemesi" data-i18n-alt="mousePreview" hidden />
+                  <span class="slot-placeholder" data-placeholder="mouse"><span data-i18n="chooseOrDropAPng">PNG seç veya bırak</span></span>
+                </div>
+                <div class="slot-meta">
+                  <div class="slot-title-row">
+                    <strong><span data-i18n="3Mouse">3. Fare</span></strong>
+                    <span class="slot-action-tag" data-tag="mouse"><span data-i18n="upload">Yükle</span></span>
+                  </div>
+                  <p><span data-i18n="shownOnAMouseClick">Fareyle tıklanınca gösterilir.</span></p>
+                </div>
+              </div>
+
+              <div class="pose-slot" data-pose="both" tabindex="0" role="button" aria-label="Klavye ve fare pozu PNG yükle veya değiştir" data-i18n-aria-label="uploadOrReplaceTheKeyboardAndMouse">
+                <div class="slot-thumb checkerboard">
+                  <img data-thumb="both" alt="Klavye + fare önizlemesi" data-i18n-alt="keyboardAndMousePreview" hidden />
+                  <span class="slot-placeholder" data-placeholder="both"><span data-i18n="chooseOrDropAPng">PNG seç veya bırak</span></span>
+                </div>
+                <div class="slot-meta">
+                  <div class="slot-title-row">
+                    <strong><span data-i18n="4KeyboardMouse">4. Klavye + fare</span></strong>
+                    <span class="slot-action-tag" data-tag="both"><span data-i18n="upload">Yükle</span></span>
+                  </div>
+                  <p><span data-i18n="shownWhenKeyboardAndMouseStrikesOverlap">İki vuruş aynı ana denk gelince gösterilir.</span></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Optional 5th PNG: Blink (Eyes Closed Idle) -->
+            <div class="pose-slot pose-slot-optional" data-pose="blink" tabindex="0" role="button" aria-label="Gözler kapalı isteğe bağlı PNG yükle veya değiştir" data-i18n-aria-label="uploadOrReplaceTheOptionalEyesClosed">
+              <div class="slot-thumb slot-thumb-compact checkerboard">
+                <img data-thumb="blink" alt="Gözler kapalı önizlemesi" data-i18n-alt="eyesClosedPreview" hidden />
+                <span class="slot-placeholder" data-placeholder="blink"><span data-i18n="chooseOrDropAPng">PNG seç veya bırak</span></span>
+              </div>
+              <div class="slot-meta slot-meta-wide">
+                <div class="slot-title-row">
+                  <strong><span data-i18n="eyesClosed">Gözler kapalı</span> <span class="muted"><span data-i18n="optional">(isteğe bağlı)</span></span></strong>
+                  <div class="optional-slot-actions">
+                    <button type="button" id="btn-clear-draft-blink" class="btn btn-ghost btn-xs" hidden>
+                      <span data-i18n="remove">Kaldır</span>
+                    </button>
+                    <span class="slot-action-tag" data-tag="blink"><span data-i18n="optional2">İsteğe bağlı</span></span>
+                  </div>
+                </div>
+                <p>
+                  <span data-i18n="useTheIdlePoseWithClosedEyes">Bekleme pozunun yalnızca gözleri kapalı hâlidir. Yüklendiğinde boşta dururken 3–7 saniyede bir göz kırpar.</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Optional Name + Secondary 2x2 Sprite Sheet Importer -->
+            <div class="upload-extras">
+              <div class="name-field">
+                <label for="character-name-input"><span data-i18n="characterName">Karakter adı</span> <span class="muted"><span data-i18n="optional">(isteğe bağlı)</span></span></label>
+                <input
+                  type="text"
+                  id="character-name-input"
+                  maxlength="48"
+                  placeholder="Örn: Mavi Tilki" data-i18n-placeholder="eGBlueFox"
+                  autocomplete="off"
+                />
+              </div>
+
+              <div id="sheet-dropzone" class="secondary-sheet-box">
+                <div>
+                  <strong><span data-i18n="alternativeOne22PngSheet">İkincil seçenek: Tek 2×2 PNG tablosu</span></strong>
+                  <p><span data-i18n="splitsTheFourRequiredPosesAddThe">Dört temel pozu ayırır; göz kırpma resmini ayrıca seçebilirsiniz.</span></p>
+                </div>
+                <button type="button" id="btn-pick-sheet" class="btn btn-ghost btn-sm">
+                  <span data-i18n="choose22Png">2×2 PNG Seç</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Side: Shared Canvas Alignment & Live Test -->
+          <div class="align-column">
+            <div class="align-header">
+              <strong><span data-i18n="canvasAndAlignment">Ortak Tuval ve Hizalama</span></strong>
+              <span class="panel-hint"><span data-i18n="dragToAlignAPoseTestWith">Pozu sürükleyerek hizalayın; klavye ve fareyle test edin</span></span>
+            </div>
+
+            <div id="modal-preview-stage" class="modal-preview-stage checkerboard drag-handle" tabindex="0" aria-label="Poz hizalama ve canlı test tuvali" data-i18n-aria-label="poseAlignmentAndLiveTestCanvas">
+              <canvas id="modal-preview-canvas"></canvas>
+              <div class="pose-indicator" id="modal-pose-badge"><span data-i18n="idle">Bekleme</span></div>
+            </div>
+
+            <div class="pose-Inspection-tabs" role="tablist" aria-label="Hizalanacak pozu seç" data-i18n-aria-label="chooseAPoseToAlign">
+              <button type="button" class="pose-tab active" data-inspect-pose="idle"><span data-i18n="idle">Bekleme</span></button>
+              <button type="button" class="pose-tab" data-inspect-pose="keyboard"><span data-i18n="keyboard">Klavye</span></button>
+              <button type="button" class="pose-tab" data-inspect-pose="mouse"><span data-i18n="mouse">Fare</span></button>
+              <button type="button" class="pose-tab" data-inspect-pose="both"><span data-i18n="keyboardMouse">Klavye + fare</span></button>
+              <button type="button" class="pose-tab" data-inspect-pose="blink"><span data-i18n="blink">Göz kırpma</span></button>
+            </div>
+
+            <div class="align-controls">
+              <label class="ghost-toggle">
+                <input type="checkbox" id="chk-ghost-idle" checked />
+                <span><span data-i18n="showIdlePoseAsAReferenceGhost">Bekleme pozunu referans gölge olarak göster</span></span>
+              </label>
+              <div class="offset-row">
+                <span id="offset-readout" class="muted"><span data-i18n="offsetX0Y0">Konum farkı: X 0, Y 0</span></span>
+                <button type="button" id="btn-reset-offset" class="btn btn-ghost btn-xs">
+                  <span data-i18n="resetAlignment">Hizayı Sıfırla</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p id="dialog-error" class="dialog-error" role="alert" hidden></p>
+
+        <footer class="dialog-footer">
+          <span id="slots-progress" class="slots-progress"><span data-i18n="04RequiredImagesReady">0 / 4 temel görsel hazır</span></span>
+          <div class="dialog-footer-buttons">
+            <button type="button" id="btn-cancel-dialog" class="btn btn-ghost"><span data-i18n="cancel">Vazgeç</span></button>
+            <button type="button" id="btn-save-and-show" class="btn btn-primary" disabled>
+              <span data-i18n="showOnDesktop">Masaüstünde göster</span>
+            </button>
+          </div>
+        </footer>
+
+        <!-- Hidden file inputs -->
+        <input type="file" id="hidden-file-input" accept="image/png,.png" hidden />
+        <input type="file" id="hidden-sheet-input" accept="image/png,.png" hidden />
+      </div>
+    </dialog>
+
+    <script src="../../i18n/tr.js"></script>
+    <script src="../../i18n/en.js"></script>
+    <script src="../../i18n/index.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
