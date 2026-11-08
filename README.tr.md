@@ -4,6 +4,8 @@
 
 [![Paket derleme ve doğrulama](https://github.com/saido-11/Dosty/actions/workflows/release.yml/badge.svg)](https://github.com/saido-11/Dosty/actions/workflows/release.yml)
 
+**[Dosty 0.1.2 ön sürümünü indir](https://github.com/saido-11/Dosty/releases/tag/v0.1.2)** · [Windows kurulum](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-setup.exe) · [Windows taşınabilir](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-portable.exe)
+
 Masaüstündeki küçük dostunuz **Dosty**, başka uygulamalarda yazarken ve tıklarken size elleriyle eşlik eder. Hazır **Mor Kedi** ile başlayın veya kendi karakterinizi ekleyin. Türkçe ve İngilizce arasında geçiş yapın, karakterinizi istediğiniz yere sürükleyin ve her şeyi çevrimdışı kullanın. Hesap, API anahtarı veya internet bağlantısı gerekmez.
 
 
@@ -29,7 +31,7 @@ Electron testleri sentetik DOM olayları ve animasyon metodu çağrıları kulla
 
 ## Paketlenmiş uygulama
 
-Test paketlerini [başarılı derlemenin](https://github.com/saido-11/Dosty/actions/runs/42505987951) **Artifacts** bölümünden indirin: `windows-x64` kurulum ve taşınabilir EXE'leri, `macos-arm64` ZIP ve DMG'yi içerir. GitHub bu çıktıları indirmek için oturum açmanızı isteyebilir. Numaralı sürüm yayımlandığında **Releases** bölümünü kullanabilirsiniz. GitHub'daki **Code → Download ZIP**, kurulabilir uygulamayı değil kaynak kodu indirir. İş akışı kendiliğinden Release yayımlamaz.
+Hazır paketleri **[Dosty 0.1.2 ön sürüm sayfasından](https://github.com/saido-11/Dosty/releases/tag/v0.1.2)** indirin. Sürüm dosyaları herkese açıktır; indirmek için GitHub oturumu gerekmez. Windows kurulum/taşınabilir EXE'leri, Mac arm64 ZIP/DMG ve doğrulama değerleri sunulur. GitHub'daki **Code → Download ZIP**, kurulabilir uygulamayı değil kaynak kodu indirir. [Başarılı derlemenin](https://github.com/saido-11/Dosty/actions/runs/42505987951) CI çıktıları da korunur; derleme akışı kendiliğinden Release yayımlamaz.
 
 ### macOS Apple Silicon
 
@@ -44,7 +46,7 @@ Giriş İzleme açıkken Dosty hâlâ izin olmadığını söylüyorsa eski uygu
 
 ### Windows x64 — gerçek kullanıcı denemesi bekliyor
 
-Windows derlemesi `dosty-0.1.2-win-x64-setup.exe` ve `dosty-0.1.2-win-x64-portable.exe` üretir. Yukarıdaki `windows-x64` çıktısını indirip çıkarın; kurulum dosyasını veya taşınabilir uygulamayı kullanın. Yerel giriş köprüsü pakete dahildir; kaynak koddan çalıştıranlar aşağıdaki geliştirme adımlarıyla derler. Windows'ta macOS'taki Giriş İzleme ayarı bulunmaz. Bunlar test paketleridir: giriş kancalarının kurulması ve paketlenmiş uygulamanın açılışı Windows CI koşucusunda geçti; SmartScreen, gerçek tuş/tıklama, oyun ve tam ekran görünürlüğü gerçek kullanıcıda ayrıca denenmelidir. [Windows deneme adımlarını](docs/WINDOWS-TEST.md) izleyin.
+[Kurulum dosyasını](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-setup.exe) veya [taşınabilir uygulamayı](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-portable.exe) indirin. Yerel giriş köprüsü pakete dahildir; kaynak koddan çalıştıranlar aşağıdaki geliştirme adımlarıyla derler. Windows'ta macOS'taki Giriş İzleme ayarı bulunmaz. Bunlar test paketleridir: giriş kancalarının kurulması ve paketlenmiş uygulamanın açılışı Windows CI koşucusunda geçti; SmartScreen, gerçek tuş/tıklama, oyun ve tam ekran görünürlüğü gerçek kullanıcıda ayrıca denenmelidir. [Windows deneme adımlarını](docs/WINDOWS-TEST.md) izleyin.
 
 Normal tuşlarda otomatik tekrar bastırılır; klavye ve fare vuruşları bağımsızdır. Güvenli giriş alanları, korumalı masaüstleri, bazı oyunlar ve işletim sistemi kısıtları yakalamayı engelleyebilir. Mevcut Mac köprüsü Caps Lock açılırken vuruş üretir, kapatılırken üretmez.
 

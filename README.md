@@ -4,6 +4,8 @@
 
 [![Build and validate packages](https://github.com/saido-11/Dosty/actions/workflows/release.yml/badge.svg)](https://github.com/saido-11/Dosty/actions/workflows/release.yml)
 
+**[Download Dosty 0.1.2 preview](https://github.com/saido-11/Dosty/releases/tag/v0.1.2)** · [Windows setup](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-setup.exe) · [Windows portable](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-portable.exe)
+
 Your little desktop companion: **Dosty** taps along as you type and click in other apps. Use the included **Mor Kedi (Purple Cat)** or bring your own character. Switch between English and Turkish, drag your companion wherever you like, and keep everything offline. No account, API key or network connection is needed at runtime.
 
 
@@ -29,7 +31,7 @@ Automated Electron tests simulate DOM events and invoke animation methods. They 
 
 ## Run a packaged app
 
-Download test packages from the **Artifacts** section of the [successful build](https://github.com/saido-11/Dosty/actions/runs/42505987951): `windows-x64` contains the setup and portable EXEs, and `macos-arm64` contains the ZIP and DMG. GitHub may require sign-in to download workflow artifacts. Use **Releases** when a versioned release is published. GitHub's **Code → Download ZIP** contains source code; it is not an installable app. The workflow does not publish Releases automatically.
+Download ready-to-run packages from the **[Dosty 0.1.2 preview release](https://github.com/saido-11/Dosty/releases/tag/v0.1.2)**. Release downloads are public and do not require GitHub sign-in. Windows setup/portable EXEs, the Mac arm64 ZIP/DMG and checksums are provided. GitHub's **Code → Download ZIP** contains source code; it is not an installable app. The [successful build](https://github.com/saido-11/Dosty/actions/runs/42505987951) also retains CI artifacts; the build workflow does not publish Releases automatically.
 
 ### macOS Apple Silicon
 
@@ -44,7 +46,7 @@ If Input Monitoring is enabled but Dosty still reports no permission, quit all o
 
 ### Windows x64 — physical acceptance pending
 
-The Windows build produces `dosty-0.1.2-win-x64-setup.exe` and `dosty-0.1.2-win-x64-portable.exe`. Download the `windows-x64` artifact linked above, extract it and use the setup installer or portable executable. The native input bridge is bundled; source users build it using the development steps below. Windows has no macOS-style Input Monitoring setting. These are test builds: hook registration and packaged startup passed on the Windows CI runner, while SmartScreen behavior, physical input, games and fullscreen visibility still need a real user test. Follow the [Windows acceptance steps](docs/WINDOWS-TEST.md).
+Download the [setup installer](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-setup.exe) or [portable executable](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-portable.exe). The native input bridge is bundled; source users build it using the development steps below. Windows has no macOS-style Input Monitoring setting. These are test builds: hook registration and packaged startup passed on the Windows CI runner, while SmartScreen behavior, physical input, games and fullscreen visibility still need a real user test. Follow the [Windows acceptance steps](docs/WINDOWS-TEST.md).
 
 Normal keyboard keys suppress autorepeat; keyboard and mouse strikes are independent. Secure-input fields, protected desktops, some games and OS restrictions can prevent capture. The current Mac bridge emits a Caps Lock strike when enabling Caps Lock, not when disabling it.
 
