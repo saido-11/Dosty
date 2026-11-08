@@ -1,6 +1,6 @@
 # Validation record
 
-Date: 2026-11-08. Host: Apple Silicon, macOS 26.6.2. No Windows machine or GitHub Actions run was used for this record.
+Date: 2026-11-08. Initial local host: Apple Silicon, macOS 26.6.2. The original local checks did not use Windows or GitHub Actions. The subsequent GitHub-hosted Windows/macOS results are recorded in the publication follow-up below.
 
 ## Source selection
 
@@ -45,7 +45,7 @@ These visual/physical results are user acceptance evidence, separate from the au
 
 ## Remaining platform/distribution checks
 
-- Build and run on Windows x64. Confirm the packaged bridge starts, Win32 hooks work, and both separately named setup and portable EXEs install/run as expected.
+- Complete physical Windows x64 acceptance: typing, mouse, direct dragging, game/fullscreen behavior and both installer/portable launch paths. CI build, native hook registration and unpacked packaged-app startup have since passed, as recorded below.
 - For public/commercial Mac distribution, configure Developer ID signing and notarization and test an Internet-downloaded copy on another Mac. Current local ad hoc signature verification does not establish Gatekeeper acceptance on another machine.
 
 ## 0.1.1 direct dragging follow-up
@@ -79,3 +79,14 @@ Generated packages, dependencies, native binaries, screenshots generated under t
 - While preparing this version, the user reported that keyboard input did not animate. The still-running 0.1.1 app displayed a missing Input Monitoring notice; its earlier direct-mouse-drag acceptance was not a keyboard acceptance test. The old app was closed. The fixed-location Dosty copy also reported no keyboard permission, despite an enabled settings entry. A read-only check of macOS TCC logs showed a saved code-signature requirement mismatch against the older build, explaining the enabled switch with denied access. The user removed the stale entry and personally approved the exact `/Applications/Dosty.app` version 0.1.2 in the file picker. The permission notice disappeared, and the actual packaged UI showed a Keyboard pose. The user then explicitly confirmed that the desktop character reacts while typing in a blank local TextEdit document. This is fresh user acceptance of background keyboard input for 0.1.2; the detailed hold/chord/fullscreen cases remain the earlier version's acceptance evidence.
 - Turkish and English were also switched through the installed 0.1.2 app's actual language selector, including translated native menu labels. The user's English preference was restored. The installed app was left open with permission working.
 - Every friend's Mac must grant its own Input Monitoring permission; GitHub does not transfer permissions. The package remains locally ad hoc signed, not notarized. Download/Gatekeeper behavior on a second Mac and Windows execution remain unverified.
+
+## GitHub publication and Windows CI follow-up
+
+- After the owner explicitly requested upload and build startup, the public repository was created at https://github.com/saido-11/Dosty and the sources were pushed. Commits use the account's GitHub noreply address. Ignored packages, dependencies and user data were excluded.
+- The first Windows run passed all 14 unit tests and the integration assertions, but failed deleting a profile that was still open in the first Electron process. A Node driver now runs the two Electron phases sequentially, with the first process fully exited before reopening the profile. This also removes shared-profile cache locking; both phases and cleanup passed on Windows afterward.
+- A subsequent Windows package check exposed platform-native ASAR separators. The verifier now normalizes listed paths and passes native normalized paths back to ASAR extraction; the file-presence and byte-for-byte source comparisons were retained.
+- [Run 42505987951](https://github.com/saido-11/Dosty/actions/runs/42505987951), source commit `ac73a254de00fb180433b696f0dc44269bff12d2`, passed both macOS and Windows jobs. Both ran 14 unit tests, Electron integration/restart tests, native compilation, packaging and package verification. Outputs include arm64 Mac ZIP/DMG and x64 Windows setup/portable EXEs.
+- The Windows startup smoke test ran the exact packaged bridge and received `P:1` after both native hook registrations succeeded. It then launched packaged `Dosty.exe` with isolated temporary settings and confirmed that the app spawned the bundled bridge from `resources/bin/input-bridge-win-x64.exe`, kept that child process alive and wrote initial settings. Test processes and their isolated data were cleaned up.
+- This is execution on a GitHub-hosted Windows runner, not physical input acceptance. No real user typing/clicking/dragging, game or fullscreen Windows pass is claimed. The EXE installer and portable launchers still need user acceptance on an ordinary Windows desktop; the startup smoke uses `win-unpacked/Dosty.exe`.
+- The GitHub-built Mac artifact was also downloaded, extracted into a disposable directory, and verified against the application sources, bundled artwork, licenses and strict deep code signature. The user's working installed Mac app was not replaced by these CI operations.
+- Both downloaded Windows EXEs were inspected locally as archives. Each contained an `app-64.7z` payload with the x64 Dosty executable, x64 native input bridge, five Purple Cat poses, application icon and Electron/Chromium notices. The setup and portable payloads contained the identical bridge binary. This verifies payload contents, not execution of either installer/portable bootstrap on this Mac.

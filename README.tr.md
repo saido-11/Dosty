@@ -2,6 +2,8 @@
 
 [English](README.md) · [Türkçe](README.tr.md)
 
+[![Paket derleme ve doğrulama](https://github.com/saido-11/Dosty/actions/workflows/release.yml/badge.svg)](https://github.com/saido-11/Dosty/actions/workflows/release.yml)
+
 Masaüstündeki küçük dostunuz **Dosty**, başka uygulamalarda yazarken ve tıklarken size elleriyle eşlik eder. Hazır **Mor Kedi** ile başlayın veya kendi karakterinizi ekleyin. Türkçe ve İngilizce arasında geçiş yapın, karakterinizi istediğiniz yere sürükleyin ve her şeyi çevrimdışı kullanın. Hesap, API anahtarı veya internet bağlantısı gerekmez.
 
 
@@ -21,13 +23,13 @@ Masaüstündeki küçük dostunuz **Dosty**, başka uygulamalarda yazarken ve t�
 
 Paket hedefleri **macOS Apple Silicon (arm64, macOS 13+)** ve **Windows x64**. En düşük Mac sürümü paket manifestinden okunmuştur; yalnızca aşağıda belirtilen sistemde test yapılmıştır. Intel Mac paketi yoktur.
 
-Geliştirme ve paket kontrolleri macOS 26.6.2 kullanan Apple Silicon Mac'te yapıldı. Windows kodu ve paketleme yolları incelendi; Windows derlemesi ve çalışma davranışı **Windows üzerinde doğrulanmadı**. CI, Windows derleme ve paket kontrollerini içerir; iş akışı dosyasının bulunması başarılı bir çalıştırma kanıtı değildir.
+Yerel geliştirme ve paket kontrolleri macOS 26.6.2 kullanan Apple Silicon Mac'te yapıldı. [GitHub Actions, macOS ve Windows x64 üzerinde başarıyla tamamlandı](https://github.com/saido-11/Dosty/actions/runs/42505987951): 14 birim testi, Electron entegrasyon/yeniden açılış kontrolleri, yerel köprü derlemesi ve paket doğrulaması geçti. Windows koşucusunda paket içindeki köprü klavye ve fare giriş kancalarını kurdu; paketlenmiş Dosty açılıp kendi köprüsünü çalışır tuttu. **Kullanıcının Windows masaüstünde gerçek tuş/tıklama, doğrudan sürükleme, oyun ve tam ekran davranışları hâlâ denenmelidir.** [Windows deneme adımları](docs/WINDOWS-TEST.md).
 
 Electron testleri sentetik DOM olayları ve animasyon metodu çağrıları kullanır. Görsel yükleme, Mor Kedi poz kararlılığı, göz kırpma, dokunma, taşıma, dil, yerleşim ve yeniden açılışı kontrol eder. Fiziksel tuş yakalamayı, alttaki uygulamaya tıklamanın ulaşmasını veya gerçek tam ekran görünürlüğünü tek başına kanıtlamaz. [Doğrulama notları](docs/VALIDATION.md).
 
 ## Paketlenmiş uygulama
 
-Proje sahibi paketleri yayımladığında bu deponun **Releases** bölümünden indirin. GitHub'daki **Code → Download ZIP**, kurulabilir uygulamayı değil kaynak kodu indirir. Mevcut iş akışı kendiliğinden herkese açık sürüm yayımlamaz.
+Test paketlerini [başarılı derlemenin](https://github.com/saido-11/Dosty/actions/runs/42505987951) **Artifacts** bölümünden indirin: `windows-x64` kurulum ve taşınabilir EXE'leri, `macos-arm64` ZIP ve DMG'yi içerir. GitHub bu çıktıları indirmek için oturum açmanızı isteyebilir. Numaralı sürüm yayımlandığında **Releases** bölümünü kullanabilirsiniz. GitHub'daki **Code → Download ZIP**, kurulabilir uygulamayı değil kaynak kodu indirir. İş akışı kendiliğinden Release yayımlamaz.
 
 ### macOS Apple Silicon
 
@@ -40,9 +42,9 @@ Proje sahibi paketleri yayımladığında bu deponun **Releases** bölümünden 
 
 Giriş İzleme açıkken Dosty hâlâ izin olmadığını söylüyorsa eski uygulama kopyalarını kapatın. Giriş İzleme'deki eski Dosty kaydını kaldırıp tam olarak `/Applications/Dosty.app` kopyasını yeniden ekleyin ve uygulamayı açın. Eski paketler önceki adla görünebilir. Başka kopyanın anahtarının açık olması, çalışan sürümün izinli olduğunu kanıtlamaz.
 
-### Windows x64 — gerçek cihaz doğrulaması bekliyor
+### Windows x64 — gerçek kullanıcı denemesi bekliyor
 
-Yapılandırma `dosty-0.1.2-win-x64-setup.exe` ve `dosty-0.1.2-win-x64-portable.exe` üretir. Windows'ta test edilmiş paket hazır olduğunda kurulum dosyasını veya taşınabilir uygulamayı kullanın. Yerel giriş köprüsü pakete dahildir; kaynak koddan çalıştıranlar aşağıdaki geliştirme adımlarıyla derler. Windows'ta macOS'taki Giriş İzleme ayarı bulunmaz. Gerçek giriş yakalama, SmartScreen davranışı, oyunlar ve tam ekran görünürlüğü Windows üzerinde hâlâ denenmelidir; bunlar geçti diye sunulmaz.
+Windows derlemesi `dosty-0.1.2-win-x64-setup.exe` ve `dosty-0.1.2-win-x64-portable.exe` üretir. Yukarıdaki `windows-x64` çıktısını indirip çıkarın; kurulum dosyasını veya taşınabilir uygulamayı kullanın. Yerel giriş köprüsü pakete dahildir; kaynak koddan çalıştıranlar aşağıdaki geliştirme adımlarıyla derler. Windows'ta macOS'taki Giriş İzleme ayarı bulunmaz. Bunlar test paketleridir: giriş kancalarının kurulması ve paketlenmiş uygulamanın açılışı Windows CI koşucusunda geçti; SmartScreen, gerçek tuş/tıklama, oyun ve tam ekran görünürlüğü gerçek kullanıcıda ayrıca denenmelidir. [Windows deneme adımlarını](docs/WINDOWS-TEST.md) izleyin.
 
 Normal tuşlarda otomatik tekrar bastırılır; klavye ve fare vuruşları bağımsızdır. Güvenli giriş alanları, korumalı masaüstleri, bazı oyunlar ve işletim sistemi kısıtları yakalamayı engelleyebilir. Mevcut Mac köprüsü Caps Lock açılırken vuruş üretir, kapatılırken üretmez.
 
@@ -70,15 +72,16 @@ npm run dist:win -- --publish never
 npm run verify:package -- "dist/mac-arm64/Dosty.app"
 # Windows paketlemesinden sonra:
 npm run verify:package -- dist/win-unpacked
+npm run test:packaged:win -- dist/win-unpacked  # Windows: köprü ve paketli uygulama açılışı
 ```
 
 `postinstall` yerel giriş köprüsünü derler. Kaynaklarla bulut senkronizasyonu dışındaki bir klasörde çalışın. Kişisel karakterleri ve kullanıcı verisini depoya koymayın.
 
 Paketler `dist/` altındadır. Windows köprüsü paketleme öncesinde derlenir; paket içindeki `resources/bin/input-bridge-win-x64.exe` konumuna kopyalanır ve buradan başlatılır. Kurulum `-setup.exe`, taşınabilir paket `-portable.exe` ile ayrılır. Paket kontrolü köprünün bulunduğunu doğrular; Win32 hook'larının çalıştığını kanıtlamaz.
 
-`.github/workflows/release.yml` iki platformda test ve paketleme yapar, iş akışı çıktısı yükler. GitHub sürümü yayımlamaz. Proje tarafından uzak depo adresi veya kimlik bilgisi ayarlanmamıştır.
+`.github/workflows/release.yml` iki platformda test ve paketleme yapar, iş akışı çıktısı yükler. GitHub sürümü yayımlamaz. Kimlik bilgileri ve imzalama sırları depoya konmaz.
 
-Hazır uygulamayı paylaşmak için karşılık gelen kaynak sürümünü yayımlayın ve `dist/` paketlerini GitHub Release'e kendiniz ekleyin. `dist/` klasörünü Git geçmişine koymayın. Windows'u doğrulanmış olarak sunmadan önce başarılı bir Windows iş akışı ve gerçek cihaz denemesi gerekir. Ajan tarafından yayın yapılmadı.
+Hazır uygulamayı Releases üzerinden paylaşmak için karşılık gelen kaynak sürümünü yayımlayın ve o sürümün paketlerini ekleyin. `dist/` klasörünü Git geçmişine koymayın. Windows'ta gerçek giriş ve tam ekran davranışlarını doğrulanmış olarak sunmadan önce gerçek kullanıcı denemesi gerekir.
 
 ## Kaynaklar ve gizlilik
 
