@@ -1,0 +1,76 @@
+name: Prepare draft downloads
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: Successful build-and-validate run ID
+        required: true
+        type: string
+      release_tag:
+        description: Existing draft release tag
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BUILD_RUN_ID: ${{ inputs.build_run_id }}
+      RELEASE_TAG: ${{ inputs.release_tag }}
+    steps:
+      - name: Validate successful build and unpublished draft
+        run: |
+          python3 - <<'PY'
+          import json, os, re, subprocess
+          repo = os.environ['GITHUB_REPOSITORY']
+          run_id, tag = os.environ['BUILD_RUN_ID'], os.environ['RELEASE_TAG']
+          assert re.fullmatch(r'[0-9]+', run_id)
+          assert re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+(?:[-.][0-9A-Za-z.-]+)?', tag)
+          def api(endpoint):
+              return json.loads(subprocess.check_output(['gh', 'api', endpoint], text=True))
+          run = api(f'repos/{repo}/actions/runs/{run_id}')
+          assert run['status'] == 'completed' and run['conclusion'] == 'success'
+          assert run['head_repository']['full_name'].lower() == repo.lower()
+          assert run['head_branch'] == 'main'
+          assert run['path'].split('@')[0] == '.github/workflows/release.yml'
+          draft = json.loads(subprocess.check_output(['gh','release','view',tag,'--repo',repo,'--json','isDraft,targetCommitish'], text=True))
+          assert draft['isDraft'], 'This workflow only uploads to unpublished drafts'
+          target = api(f"repos/{repo}/commits/{draft['targetCommitish']}")['sha']
+          comparison = api(f"repos/{repo}/compare/{run['head_sha']}...{target}")
+          assert comparison['status'] in ('ahead', 'identical')
+          assert all(f['filename'].startswith('docs/') or f['filename'] in ('README.md','README.tr.md') for f in comparison.get('files', [])), 'Release source differs from tested application source'
+          print('Successful build and matching draft source verified.')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.build_run_id }}
+          path: packages
+      - name: Upload packages and checksums to draft only
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, subprocess
+          from pathlib import Path
+          repo, tag = os.environ['GITHUB_REPOSITORY'], os.environ['RELEASE_TAG']
+          draft = json.loads(subprocess.check_output(['gh','release','view',tag,'--repo',repo,'--json','isDraft'], text=True))
+          assert draft['isDraft'], 'Release must remain unpublished during upload'
+          version = tag[1:]
+          expected = {f'dosty-{version}-{suffix}' for suffix in ('mac-arm64.zip','mac-arm64.dmg','win-x64-setup.exe','win-x64-portable.exe')}
+          files = sorted(p for p in Path('packages').rglob('*') if p.is_file() and p.suffix in ('.exe','.zip','.dmg'))
+          assert len(files) == 4 and {p.name for p in files} == expected
+          lines = []
+          for item in files:
+              with item.open('rb') as stream:
+                  lines.append(f'{hashlib.file_digest(stream, "sha256").hexdigest()}  {item.name}\n')
+          checksums = Path('packages/SHA256SUMS.txt')
+          checksums.write_text(''.join(lines))
+          subprocess.run(['gh','release','upload',tag,'--repo',repo,'--clobber',*[str(p) for p in files],str(checksums)], check=True)
+          print('Four packages and checksums uploaded. Draft was not published.')
+          PY
