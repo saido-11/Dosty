@@ -84,6 +84,8 @@ Artifacts are written to `dist/`. The Windows native bridge is compiled before p
 
 `.github/workflows/release.yml` tests and builds on each platform and uploads workflow artifacts. It does **not** publish GitHub Releases. Credentials and signing secrets are not committed.
 
+The separate **Prepare draft downloads** workflow is manual only. It verifies a successful build and matching release source, then transfers its four packages and checksums to an existing unpublished draft inside GitHub. It never publishes the draft.
+
 To share a prebuilt application through Releases, publish the matching source version and attach its packages. Keep `dist/` out of Git history. A real Windows acceptance test is still needed before presenting physical input and fullscreen behavior as verified.
 
 ## Project layout and privacy

@@ -81,6 +81,8 @@ Paketler `dist/` altındadır. Windows köprüsü paketleme öncesinde derlenir;
 
 `.github/workflows/release.yml` iki platformda test ve paketleme yapar, iş akışı çıktısı yükler. GitHub sürümü yayımlamaz. Kimlik bilgileri ve imzalama sırları depoya konmaz.
 
+Ayrı **Prepare draft downloads** akışı yalnızca elle başlatılır. Başarılı derlemeyi ve sürümün karşılık gelen kaynaklarını doğrulayıp dört paketi ve doğrulama değerlerini GitHub içinde mevcut, yayımlanmamış taslağa aktarır. Taslağı kendiliğinden yayımlamaz.
+
 Hazır uygulamayı Releases üzerinden paylaşmak için karşılık gelen kaynak sürümünü yayımlayın ve o sürümün paketlerini ekleyin. `dist/` klasörünü Git geçmişine koymayın. Windows'ta gerçek giriş ve tam ekran davranışlarını doğrulanmış olarak sunmadan önce gerçek kullanıcı denemesi gerekir.
 
 ## Kaynaklar ve gizlilik
