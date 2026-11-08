@@ -21,11 +21,12 @@ for (const file of ['LICENSE.electron.txt', 'LICENSES.chromium.html']) {
 const packagedMetadata = JSON.parse(asar.extractFile(archive, 'package.json'));
 assert.equal(packagedMetadata.productName, 'Dosty');
 assert.equal(packagedMetadata.license, 'GPL-3.0-only');
-const files = asar.listPackage(archive).map(f => f.replace(/^\//, ''));
+// asar returns platform-native separators and expects them again on extraction.
+const files = asar.listPackage(archive).map(f => f.replaceAll('\\', '/').replace(/^\/+/, ''));
 const sourceFiles = fs.readdirSync('src', {recursive: true}).filter(f => fs.statSync(path.join('src', f)).isFile()).map(f => 'src/' + f.replaceAll('\\', '/'));
 for (const file of sourceFiles) {
   assert.ok(files.includes(file), `Missing packaged source: ${file}`);
-  assert.deepEqual(asar.extractFile(archive, file), fs.readFileSync(file), `Outdated packaged source: ${file}`);
+  assert.deepEqual(asar.extractFile(archive, path.normalize(file)), fs.readFileSync(file), `Outdated packaged source: ${file}`);
 }
 assert.ok(!files.some(f => /(?:^|\/)(?:node_modules|test-results|\.env)(?:\/|$)/.test(f)));
 for (const pose of ['idle','keyboard','mouse','both','blink']) {
