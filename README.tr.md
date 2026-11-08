@@ -4,7 +4,16 @@
 
 [![Paket derleme ve doğrulama](https://github.com/saido-11/Dosty/actions/workflows/release.yml/badge.svg)](https://github.com/saido-11/Dosty/actions/workflows/release.yml)
 
-**[Dosty 0.1.2 ön sürümünü indir](https://github.com/saido-11/Dosty/releases/tag/v0.1.2)** · [Windows kurulum](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-setup.exe) · [Windows taşınabilir](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-portable.exe)
+## İndir
+
+| Platform | İndir | Alternatif |
+| --- | --- | --- |
+| **Windows (64 bit)** | **[Windows için indir — Kurulum (.exe)](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-setup.exe)** | [Taşınabilir — kurulum gerekmez](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-portable.exe) |
+| **Mac (Apple Silicon, M1 ve sonrası · macOS 13+)** | **[Mac için indir (.dmg)](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-mac-arm64.dmg)** | [ZIP](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-mac-arm64.zip) |
+
+Sürüm **0.1.2 ön sürüm** · [Tüm indirmeler ve sürüm notları](https://github.com/saido-11/Dosty/releases/tag/v0.1.2) · [Kurulum ve Mac izinleri](#paketlenmiş-uygulama)
+
+GitHub hesabı gerekmez. Intel Mac paketi bulunmuyor.
 
 Masaüstündeki küçük dostunuz **Dosty**, başka uygulamalarda yazarken ve tıklarken size elleriyle eşlik eder. Hazır **Mor Kedi** ile başlayın veya kendi karakterinizi ekleyin. Türkçe ve İngilizce arasında geçiş yapın, karakterinizi istediğiniz yere sürükleyin ve her şeyi çevrimdışı kullanın. Hesap, API anahtarı veya internet bağlantısı gerekmez.
 

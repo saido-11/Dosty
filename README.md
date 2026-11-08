@@ -4,7 +4,16 @@
 
 [![Build and validate packages](https://github.com/saido-11/Dosty/actions/workflows/release.yml/badge.svg)](https://github.com/saido-11/Dosty/actions/workflows/release.yml)
 
-**[Download Dosty 0.1.2 preview](https://github.com/saido-11/Dosty/releases/tag/v0.1.2)** · [Windows setup](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-setup.exe) · [Windows portable](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-portable.exe)
+## Download
+
+| Platform | Download | Alternative |
+| --- | --- | --- |
+| **Windows (64-bit)** | **[Download for Windows — Setup (.exe)](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-setup.exe)** | [Portable — no installation](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-win-x64-portable.exe) |
+| **Mac (Apple Silicon, M1 and later · macOS 13+)** | **[Download for Mac (.dmg)](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-mac-arm64.dmg)** | [ZIP](https://github.com/saido-11/Dosty/releases/download/v0.1.2/dosty-0.1.2-mac-arm64.zip) |
+
+Version **0.1.2 preview** · [All downloads and release notes](https://github.com/saido-11/Dosty/releases/tag/v0.1.2) · [Installation and Mac permissions](#run-a-packaged-app)
+
+No GitHub account needed. Intel Mac packages are not available.
 
 Your little desktop companion: **Dosty** taps along as you type and click in other apps. Use the included **Mor Kedi (Purple Cat)** or bring your own character. Switch between English and Turkish, drag your companion wherever you like, and keep everything offline. No account, API key or network connection is needed at runtime.
 
