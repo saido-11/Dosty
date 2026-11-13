@@ -13,11 +13,11 @@ assert.ok(fs.existsSync(appPath));
 assert.ok(fs.existsSync(bridgePath));
 
 // Run the exact packaged native binary: P:1 is emitted only after BOTH Win32
-// hook registrations succeed. This does not synthesize or verify physical input.
+// Raw Input devices are registered. This does not synthesize or verify physical input.
 const probe = spawn(bridgePath, [], { windowsHide: true, stdio: ['pipe', 'pipe', 'inherit'] });
 try {
   await new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => finish(new Error('Native hook startup timed out')), 10_000);
+    const timeout = setTimeout(() => finish(new Error('Native Raw Input startup timed out')), 10_000);
     let output = '';
     const finish = error => {
       clearTimeout(timeout);
@@ -27,11 +27,11 @@ try {
     probe.once('exit', code => finish(new Error(`Bridge exited before confirmation: ${code}`)));
     probe.stdout.on('data', chunk => {
       output += chunk.toString();
-      if (output.includes('P:0')) finish(new Error('Native Win32 hook registration failed'));
+      if (output.includes('P:0')) finish(new Error('Native Win32 Raw Input registration failed'));
       else if (output.includes('P:1')) finish();
     });
   });
-  console.log('Packaged native bridge registered keyboard and mouse hooks (P:1).');
+  console.log('Packaged native bridge registered keyboard and mouse for Raw Input (P:1).');
 } finally {
   probe.stdin.end();
   // The bridge's stdin watcher should terminate it; kill only this probe if needed.
